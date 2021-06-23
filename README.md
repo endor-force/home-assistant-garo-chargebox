@@ -2,7 +2,7 @@
 Details for setting up Garo Chargebox in Homeassistant
 
 I set up this integration purely with the rest and curl a long time back and thought i would share it with you.
-Texts are in Swedish, i hope you figure it out anyway.
+Texts are in Swedish, i think you will figure it out :)
 
 ![image|311x500](content/lovelace-screenshot.png) 
 
@@ -11,7 +11,7 @@ It is using the following parts:
 * Command line switch to control availability on/off for the chargebox.. if you don't trust your neighbours then you can schedule or automate the availability of charging from the box.
 * Rest sensor to collect the data from the box as attributes (one call to collect all stats)
 * Template sensors to calculate and make the collected data representable and enumerate statuses.
-* Lovelace cards with dynamic image that chages color based on status (one image of the chargebox and dynamic overlay of the light/color)
+* Lovelace cards with dynamic image that changes color based on status.
 * Utility sensors that collect and calculate stats for usage per month and day..
 
 Switch to control the state/availability for the box (update with your IP accordingly)
