@@ -111,6 +111,8 @@ sensor:
             Ventileringsfel
           {% elif is_state_attr('sensor.laddbox', 'connector', 'DC_ERROR') %}
             DC-fel
+          {% elif is_state_attr('sensor.laddbox', 'connector', 'DISABLED') %}
+            Inaktiverad
           {% else %}
             {{ state_attr('sensor.laddbox', 'connector') }}
           {% endif %}
@@ -157,6 +159,7 @@ Lovelace page:
                 "Kontaktfel": /local/laddbox_rod.png
                 "Ventileringsfel": /local/laddbox_rod.png
                 "DC-fel": /local/laddbox_rod.png
+                "Inaktiverad": /local/laddbox_off.png
                 "None": /local/laddbox_off.png
           - type: entities
             entities:
