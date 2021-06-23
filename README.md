@@ -4,6 +4,7 @@ Details for setting up Garo Chargebox in Homeassistant
 I set up this integration purely with the rest and curl a long time back and thought i would share it with you.
 Texts are in Swedish, i hope you figure it out anyway.
 
+![image|311x500](content/lovelace-screenshot.png) 
 
 It is using the following parts:
 
