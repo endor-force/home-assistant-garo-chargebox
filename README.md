@@ -14,15 +14,23 @@ It is using the following parts:
 * Lovelace cards with dynamic image that changes color based on status.
 * Utility sensors that collect and calculate stats for usage per month and day..
 
+
+*Note:* for chargebox with software version earlier than v1.3.1 you need to format the urls like this instead:
+```
+http://192.168.xxx.yyy:2222/rest/chargebox/mode
+http://192.168.xxx.yyy:2222/rest/chargebox/status
+```
+
 Switch to control the state/availability for the box (update with your IP accordingly)
+
 ```
 switch:
   - platform: command_line
     switches:
 #Laddbox mode
       laddbox_mode:
-          command_on: '/usr/bin/curl -X POST -H "Content-Type: application/json" -d "ALWAYS_ON" http://192.168.xxx.yyy:2222/rest/chargebox/mode'
-          command_off: '/usr/bin/curl -X POST -H "Content-Type: application/json" -d "ALWAYS_OFF" http://192.168.xxx.yyy:2222/rest/chargebox/mode'
+          command_on: '/usr/bin/curl -X POST -H "Content-Type: application/json" -d "ALWAYS_ON" http://192.168.xxx.yyy:8080/servlet/rest/chargebox/mode'
+          command_off: '/usr/bin/curl -X POST -H "Content-Type: application/json" -d "ALWAYS_OFF" http://192.168.xxx.yyy:8080/servlet/rest/chargebox/mode'
           command_state: '/usr/bin/curl -X GET http://192.168.xxx.yyy:2222/rest/chargebox/status'
           value_template: '{{ value_json.mode == "ALWAYS_ON" }}'
 ```
@@ -33,7 +41,7 @@ The sensor with attributes:
 sensor:
   - platform: rest
     name: Laddbox
-    resource: http://192.168.xxx.yyy:2222/rest/chargebox/status
+    resource: http://192.168.xxx.yyy:8080/servlet/rest/chargebox/status
     json_attributes:
         - connector
         - mode
