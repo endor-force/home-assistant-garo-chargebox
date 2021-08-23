@@ -63,55 +63,72 @@ Template sensors to calculate and enumerate statuses:
 ```
 sensor:
   - platform: template
-  #Laddbox templates
     sensors:
+      #Laddbox templates
       laddbox_chargingcurrent:
         friendly_name: 'Aktuell laddström'
-        value_template: '{{ states.sensor.laddbox.attributes["currentChargingCurrent"]/1000 | round(1)}}'
         unit_of_measurement: 'A'
+        value_template: >
+          {% set state = state_attr('sensor.laddbox', 'currentChargingCurrent')/1000 | round(1) %}
+          {% if state >= 0 %}
+            {{state}}
+          {% else %}
+           0,0
+          {% endif %}
       laddbox_chargingpower:
         friendly_name: 'Aktuell förbrukning'
-        value_template: '{{ states.sensor.laddbox.attributes["currentChargingPower"]/1000 | round(1)}}'
         unit_of_measurement: 'kW'
+        value_template: >
+          {% set state = state_attr('sensor.laddbox', 'currentChargingPower')/1000 | round(1) %}
+          {% if state >= 0 %}
+            {{state}}
+          {% else %}
+           0,0
+          {% endif %}
       laddbox_sessionenergy:
         friendly_name: 'Laddat sedan anslutning'
-        value_template: '{{ states.sensor.laddbox.attributes["accSessionEnergy"]/1000 | round(1)}}'
+        value_template: '{{ state_attr("sensor.laddbox", "accSessionEnergy")/1000 | round(1) }}'
         unit_of_measurement: 'kWh'
       laddbox_totalconsumption:
         friendly_name: 'Total förbrukning'
-        value_template: '{{ states.sensor.laddbox.attributes["latestReading"]/1000 | round(1)}}'
+        value_template: '{{ state_attr("sensor.laddbox", "latestReading")/1000 | round(1) }}'
         unit_of_measurement: 'kWh'
       laddbox_temp:
         friendly_name: 'Laddbox temp'
-        value_template: '{{ states.sensor.laddbox.attributes["currentTemperature"]}}'
+        value_template: '{{ state_attr("sensor.laddbox", "currentTemperature") }}'
         unit_of_measurement: '°C'
       laddbox_chargerstatus:
         friendly_name: 'Laddbox status'
         value_template: >
-          value_template: >
           {# Enumerate and give the chargebox translation texts. #}
           {%-
-          set box_status = {
-            'CHARGING_FINISHED' : 'Klar',
-            'CHARGING_CANCELLED' : 'Avbruten',
-            'CHARGING_PAUSED' : 'Stoppad',
-            'NOT_CONNECTED' : 'Ej ansluten',
-            'CONNECTED' : 'Ansluten',
-            'SEARCH_COMM' : 'Ansluten - söker',
-            'CHARGING' : 'Laddar',
-            'RCD_FAULT' : 'RCD-fel',
-            'OVERHEAT' : 'Överhettad',
-            'CRITICAL_TEMPERATURE' : 'Kritisk temperatur',
-            'INITIALIZATION' : 'Initierar',
-            'CABLE_FAULT' : 'Kabelfel',
-            'LOCK_FAULT' : 'Låsfel',
-            'CONTACTOR_FAULT' : 'Kontaktfel',
-            'VENT_FAULT' : 'Ventileringsfel',
-            'DC_ERROR' : 'DC-fel',
-            'DISABLED' : 'Inaktiverad'
+            set box_status = {
+              'CHARGING_FINISHED' : 'Klar',
+              'CHARGING_CANCELLED' : 'Avbruten',
+              'CHARGING_PAUSED' : 'Pausad av lastbalanserare',
+              'NOT_CONNECTED' : 'Ej ansluten',
+              'CONNECTED' : 'Ansluten',
+              'SEARCH_COMM' : 'Ansluten - söker',
+              'CHARGING' : 'Laddar',
+              'RCD_FAULT' : 'Skyddsbrytare utlöst',
+              'OVERHEAT' : 'Överhettad, begränsad',
+              'CRITICAL_TEMPERATURE' : 'Kritisk temperatur',
+              'INITIALIZATION' : 'Initierar',
+              'CABLE_FAULT' : 'Kabelfel',
+              'LOCK_FAULT' : 'Låsfel',
+              'CONTACTOR_FAULT' : 'Kontaktfel',
+              'VENT_FAULT' : 'Ventileringsfel',
+              'DC_ERROR' : 'DC-fel',
+              'DISABLED' : 'Inaktiverad',
+              'UNAVAILABLE' : 'Laddning pausad (Master)',
+              'REMOTE_DISABLED' : 'Externt deaktiverad',
+              'DC_HARDWARE' : 'DC hårdvarufel',
+              'CP_FAULT' : 'Kommunikationsfel (CP-signal)',
+              'CP_SHORTED' : 'Kommunikationsfel (CP-kortsluten)'
             }
           -%}
-          {# Get the status from the attribute #}
+
+          {# Get the box status from the attribute connector #}
           {% set status = state_attr('sensor.laddbox','connector') %}
 
           {#- Check if the status is translated and return the translated text.
@@ -150,12 +167,12 @@ Lovelace page:
             state_image:
                 "Klar": /local/laddbox_gron.png
                 "Avbruten": /local/laddbox_gron.png
-                "Stoppad": /local/laddbox_gron.png
+                "Pausad av lastbalanserare": /local/laddbox_gron.png
                 "Ej ansluten": /local/laddbox_gron.png
                 "Ansluten": /local/laddbox_gron.png
                 "Ansluten - söker": /local/laddbox_gron.png
                 "Laddar": /local/laddbox_bla.png
-                "RCD-fel": /local/laddbox_rod.png
+                "Skyddsbrytare utlöst": /local/laddbox_rod.png
                 "Överhettad, begränsad": /local/laddbox_bla.png
                 "Kritisk temperatur": /local/laddbox_rod.png
                 "Initierar": /local/laddbox_gron.png
