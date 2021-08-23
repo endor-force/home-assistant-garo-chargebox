@@ -61,45 +61,59 @@ sensor:
 
 Template sensors to calculate and enumerate statuses:
 ```
-sensor:
-  - platform: template
-    sensors:
-      #Laddbox templates
-      laddbox_chargingcurrent:
-        friendly_name: 'Aktuell laddström'
+template:
+  sensor:
+   #Laddbox templates
+      - unique_id: 'laddbox_chargingcurrent'
+        name: 'Aktuell laddström'
+        icon: mdi:flash-circle
         unit_of_measurement: 'A'
-        value_template: >
+        state_class: measurement
+        state: >
           {% set state = state_attr('sensor.laddbox', 'currentChargingCurrent')/1000 | round(1) %}
           {% if state >= 0 %}
             {{state}}
           {% else %}
-           0,0
+            0,0
           {% endif %}
-      laddbox_chargingpower:
-        friendly_name: 'Aktuell förbrukning'
+
+      - unique_id: 'laddbox_chargingpower'
+        name: 'Aktuell förbrukning'
+        icon: mdi:resistor
         unit_of_measurement: 'kW'
-        value_template: >
+        state_class: measurement
+        state: >
           {% set state = state_attr('sensor.laddbox', 'currentChargingPower')/1000 | round(1) %}
           {% if state >= 0 %}
             {{state}}
           {% else %}
-           0,0
+            0,0
           {% endif %}
-      laddbox_sessionenergy:
-        friendly_name: 'Laddat sedan anslutning'
-        value_template: '{{ state_attr("sensor.laddbox", "accSessionEnergy")/1000 | round(1) }}'
+
+      - unique_id: 'laddbox_sessionenergy'
+        name: 'Laddat sedan anslutning'
+        icon: mdi:clock-start
+        state: '{{ state_attr("sensor.laddbox", "accSessionEnergy")/1000 | round(1) }}'
         unit_of_measurement: 'kWh'
-      laddbox_totalconsumption:
-        friendly_name: 'Total förbrukning'
-        value_template: '{{ state_attr("sensor.laddbox", "latestReading")/1000 | round(1) }}'
+        state_class: measurement
+
+      - unique_id: 'laddbox_totalconsumption'
+        name: 'Total förbrukning'
+        icon: mdi:gauge
+        state: '{{ state_attr("sensor.laddbox", "latestReading")/1000 | round(1) }}'
         unit_of_measurement: 'kWh'
-      laddbox_temp:
-        friendly_name: 'Laddbox temp'
-        value_template: '{{ state_attr("sensor.laddbox", "currentTemperature") }}'
+        state_class: measurement
+
+      - unique_id: 'laddbox_temp'
+        name: 'Laddbox temp'
+        icon: mdi:thermometer
+        state: '{{ state_attr("sensor.laddbox", "currentTemperature") }}'
         unit_of_measurement: '°C'
-      laddbox_chargerstatus:
-        friendly_name: 'Laddbox status'
-        value_template: >
+        state_class: measurement
+
+      - unique_id: 'laddbox_chargerstatus'
+        name: 'Laddbox status'
+        state: >
           {# Enumerate and give the chargebox translation texts. #}
           {%-
             set box_status = {
@@ -144,10 +158,10 @@ Utility meters:
 ```
 utility_meter:
   laddning_bil_manad:
-    source: sensor.laddbox_totalconsumption
+    source: sensor.laddbox_total_forbrukning
     cycle: monthly
   laddning_bil_daglig:
-    source: sensor.laddbox_totalconsumption
+    source: sensor.laddbox_total_forbrukning
     cycle: daily
 ```
 
@@ -163,7 +177,7 @@ Lovelace page:
         cards:
           - type: picture-entity
             name: Laddbox
-            entity: sensor.laddbox_chargerstatus
+            entity: sensor.laddbox_status
             state_image:
                 "Klar": /local/laddbox_gron.png
                 "Avbruten": /local/laddbox_gron.png
@@ -190,21 +204,11 @@ Lovelace page:
                 "None": /local/laddbox_off.png
           - type: entities
             entities:
-              - entity: sensor.laddbox_chargingpower
-                name: Aktuell förbrukning
-                icon: mdi:resistor
-              - entity: sensor.laddbox_chargingcurrent
-                name: Aktuell laddström
-                icon: mdi:flash-circle
-              - entity: sensor.laddbox_sessionenergy
-                name: Laddat sedan anslutning
-                icon: mdi:clock-start
+              - entity: sensor.aktuell_forbrukning
+              - entity: sensor.aktuell_laddstrom
+              - entity: sensor.laddat_sedan_anslutning
               - entity: sensor.laddbox_temp
-                name: Temperatur
-                icon: mdi:thermometer
-              - entity: sensor.laddbox_totalconsumption
-                name: Total förbrukning
-                icon: mdi:gauge
+              - entity: sensor.total_forbrukning
               - entity: switch.laddbox_mode
                 name: Laddbox tillgänglig
           - type: entities
