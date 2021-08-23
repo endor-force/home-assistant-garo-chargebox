@@ -161,7 +161,7 @@ Lovelace page:
                 "RCD-fel": /local/laddbox_rod.png
                 "Överhettad": /local/laddbox_rod.png
                 "Kritisk temperatur": /local/laddbox_rod.png
-                "Initierar": /local/laddbox_rod.png
+                "Initierar": /local/laddbox_gron.png
                 "Kabelfel": /local/laddbox_rod.png
                 "Låsfel": /local/laddbox_rod.png
                 "Kontaktfel": /local/laddbox_rod.png
