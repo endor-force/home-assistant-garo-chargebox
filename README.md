@@ -15,13 +15,14 @@ It is using the following parts:
 * Utility sensors that collect and calculate stats for usage per month and day..
 
 
-*Note:* for chargebox with software version earlier than v1.3.1 you need to format the urls like this instead:
+*Note:* for chargebox with software version earlier than v1.3.1 you need to format the urls differently, update of the box is recommended:
 ```
 http://192.168.xxx.yyy:2222/rest/chargebox/mode
 http://192.168.xxx.yyy:2222/rest/chargebox/status
 ```
 
-Switch to control the state/availability for the box (update with your IP accordingly)
+Switch to control the state/availability for the box (update with your IP or hostname accordingly): 
+Below format is confirmed for v 1.3.1 and later.
 
 ```
 switch:
