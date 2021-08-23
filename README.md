@@ -88,42 +88,38 @@ sensor:
       laddbox_chargerstatus:
         friendly_name: 'Laddbox status'
         value_template: >
-          {% if is_state_attr('sensor.laddbox', 'connector', 'CHARGING_FINISHED') %}
-            Klar
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CHARGING_CANCELLED') %}
-            Avbruten
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CHARGING_PAUSED') %}
-            Stoppad
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'NOT_CONNECTED') %}
-            Ej ansluten
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CONNECTED') %}
-            Ansluten
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'SEARCH_COMM') %}
-            Ansluten - söker
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CHARGING') %}
-            Laddar
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'RCD_FAULT') %}
-            RCD-fel
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'OVERHEAT') %}
-            Överhettad
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CRITICAL_TEMPERATURE') %}
-            Kritisk temperatur
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'INITIALIZATION') %}
-            Initierar
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CABLE_FAULT') %}
-            Kabelfel
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'LOCK_FAULT') %}
-            Låsfel
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'CONTACTOR_FAULT') %}
-            Kontaktfel
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'VENT_FAULT') %}
-            Ventileringsfel
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'DC_ERROR') %}
-            DC-fel
-          {% elif is_state_attr('sensor.laddbox', 'connector', 'DISABLED') %}
-            Inaktiverad
+          value_template: >
+          {# Enumerate and give the chargebox translation texts. #}
+          {%-
+          set box_status = {
+            'CHARGING_FINISHED' : 'Klar',
+            'CHARGING_CANCELLED' : 'Avbruten',
+            'CHARGING_PAUSED' : 'Stoppad',
+            'NOT_CONNECTED' : 'Ej ansluten',
+            'CONNECTED' : 'Ansluten',
+            'SEARCH_COMM' : 'Ansluten - söker',
+            'CHARGING' : 'Laddar',
+            'RCD_FAULT' : 'RCD-fel',
+            'OVERHEAT' : 'Överhettad',
+            'CRITICAL_TEMPERATURE' : 'Kritisk temperatur',
+            'INITIALIZATION' : 'Initierar',
+            'CABLE_FAULT' : 'Kabelfel',
+            'LOCK_FAULT' : 'Låsfel',
+            'CONTACTOR_FAULT' : 'Kontaktfel',
+            'VENT_FAULT' : 'Ventileringsfel',
+            'DC_ERROR' : 'DC-fel',
+            'DISABLED' : 'Inaktiverad'
+            }
+          -%}
+          {# Get the status from the attribute #}
+          {% set status = state_attr('sensor.laddbox','connector') %}
+
+          {#- Check if the status is translated and return the translated text.
+          If a translation is not found then status text will be raw status text. -#}
+          {% if box_status.get(status) %}
+            {{box_status.get(status)}}
           {% else %}
-            {{ state_attr('sensor.laddbox', 'connector') }}
+            {{status}}
           {% endif %}
 ```
 
@@ -160,7 +156,7 @@ Lovelace page:
                 "Ansluten - söker": /local/laddbox_gron.png
                 "Laddar": /local/laddbox_bla.png
                 "RCD-fel": /local/laddbox_rod.png
-                "Överhettad": /local/laddbox_rod.png
+                "Överhettad, begränsad": /local/laddbox_bla.png
                 "Kritisk temperatur": /local/laddbox_rod.png
                 "Initierar": /local/laddbox_gron.png
                 "Kabelfel": /local/laddbox_rod.png
@@ -169,6 +165,11 @@ Lovelace page:
                 "Ventileringsfel": /local/laddbox_rod.png
                 "DC-fel": /local/laddbox_rod.png
                 "Inaktiverad": /local/laddbox_off.png
+                "Laddning pausad (Master)" : /local/laddbox_bla.png
+                "Externt deaktiverad" : /local/laddbox_bla.png
+                "DC hårdvarufel" : /local/laddbox_rod.png
+                "Kommunikationsfel (CP-signal)" : /local/laddbox_rod.png
+                "Kommunikationsfel (CP-kortsluten)" : /local/laddbox_rod.png
                 "None": /local/laddbox_off.png
           - type: entities
             entities:
