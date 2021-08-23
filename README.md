@@ -31,7 +31,7 @@ switch:
       laddbox_mode:
           command_on: '/usr/bin/curl -X POST -H "Content-Type: application/json" -d "ALWAYS_ON" http://192.168.xxx.yyy:8080/servlet/rest/chargebox/mode'
           command_off: '/usr/bin/curl -X POST -H "Content-Type: application/json" -d "ALWAYS_OFF" http://192.168.xxx.yyy:8080/servlet/rest/chargebox/mode'
-          command_state: '/usr/bin/curl -X GET http://192.168.xxx.yyy:2222/rest/chargebox/status'
+          command_state: '/usr/bin/curl -X GET http://192.168.xxx.yyy:8080/servlet/rest/chargebox/status'
           value_template: '{{ value_json.mode == "ALWAYS_ON" }}'
 ```
 
