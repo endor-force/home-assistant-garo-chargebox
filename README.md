@@ -35,7 +35,7 @@ It consists of the following parts:
     
     switch:
       - !include garo_chargebox/switch.yaml
-    ```
+  ```
 
 4. Add the view or cards in to existing view in `ui-lovelace.yaml` if you are using Yaml mode:
 
