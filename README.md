@@ -18,24 +18,27 @@ It consists of the following parts:
 
 1. Download and put `www` and `garo_chargebox` in to your home assistant `config` folder.  
 2. Update the files `garo_chargebox/sensor.yaml` and `garo_chargebox/switch.yaml` with the ip or hostname of your chargebox.  
-3. Add below in `configuration.yaml`:  
-*Note: you can only have one section of each main entry, such as sensor, switch, utility_meter and template in your configuration.yaml so add the includes in to any existing integration type if you already have one of these sections in your file. However, child elements such as template.sensor need to be added even if it already exist.*
- 
- ```
-    ############### GARO CHARGEBOX CONFIG ###############
+3. Add below in `configuration.yaml`:    
+*__Note__: you can only have __one section of each main entry__, such as sensor, switch, utility_meter and template in your configuration.yaml so add the includes in to any existing integration type if you already have one of these sections in your file. However, child elements such as template.sensor need to be added even if it already exist.*
+
+    ``` 
     template: 
+      ### GARO CHARGEBOX ###
       sensor: 
         - include garo_chargebox/template_sensor.yaml
-    
+
     utility_meter:
+      ### GARO CHARGEBOX ###
       !include garo_chargebox/utility_meter.yaml
-    
+
     sensor: 
+      ### GARO CHARGEBOX ###
       - !include garo_chargebox/sensor.yaml
-    
+
     switch:
+      ### GARO CHARGEBOX ###
       - !include garo_chargebox/switch.yaml
-  ```
+    ```
 
 4. Add the view or cards in to existing view in `ui-lovelace.yaml` if you are using Yaml mode:
 
@@ -47,12 +50,12 @@ It consists of the following parts:
     ```
     b) Or add the cards in existing view (example):
     ```
-      - title: Car
-        id: car
-        icon: mdi:car
-        panel: false
-        cards:
-          - !include garo_chargebox/lovelace_cards.yaml
+   - title: Car
+     id: car
+     icon: mdi:car
+     panel: false
+     cards:
+       - !include garo_chargebox/lovelace_cards.yaml
     ```
 
 
