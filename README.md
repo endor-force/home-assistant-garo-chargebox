@@ -18,14 +18,23 @@ It consists of the following parts:
 
 1. Download and put `www` and `garo_chargebox` in to your home assistant `config` folder.  
 2. Update the files `garo_chargebox/sensor.yaml` and `garo_chargebox/switch.yaml` with the ip or hostname of your chargebox.  
-3. Add below in `configuration.yaml` (can be placed anywhere in the file, suggested in the bottom):  
-    ```
+3. Add below in `configuration.yaml`:  
+*Note: you can only have one section of each main entry, such as sensor, switch, utility_meter and template in your configuration.yaml so add the includes in to any existing integration type if you already have one of these sections in your file. However, child elements such as template.sensor need to be added even if it already exist.*
+ 
+ ```
     ############### GARO CHARGEBOX CONFIG ###############
-    template: !include garo_chargebox/template_sensor.yaml
-    utility_meter: !include garo_chargebox/utility_meter.yaml
-    switch: !include garo_chargebox/switch.yaml
-    sensor: !include garo_chargebox/sensor.yaml
-
+    template: 
+      sensor: 
+        - include garo_chargebox/template_sensor.yaml
+    
+    utility_meter:
+      !include garo_chargebox/utility_meter.yaml
+    
+    sensor: 
+      - !include garo_chargebox/sensor.yaml
+    
+    switch:
+      - !include garo_chargebox/switch.yaml
     ```
 
 4. Add the view or cards in to existing view in `ui-lovelace.yaml` if you are using Yaml mode:
