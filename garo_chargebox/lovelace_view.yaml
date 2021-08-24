@@ -40,7 +40,6 @@ cards:
           - entity: sensor.laddbox_temp
           - entity: sensor.total_forbrukning
           - entity: switch.laddbox_mode
-            name: Laddbox tillgänglig
       - type: entities
         entities:
           - entity: sensor.laddning_bil_daglig
