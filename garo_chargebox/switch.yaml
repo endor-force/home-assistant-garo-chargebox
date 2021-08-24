@@ -1,0 +1,8 @@
+  - platform: command_line
+    switches:
+      laddbox_mode:
+          friendly_name: 'Laddbox tillgänglig'
+          command_on: '/usr/bin/curl -s -X POST http://192.168.86.247:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
+          command_off: '/usr/bin/curl -s -X POST http://192.168.86.247:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
+          command_state: '/usr/bin/curl -s -X GET http://192.168.86.247:8080/servlet/rest/chargebox/status'
+          value_template: '{{ value_json.mode == "ALWAYS_ON" }}'
