@@ -1,6 +1,6 @@
-  laddning_bil_manad:
-    source: sensor.laddbox_total_forbrukning
-    cycle: monthly
-  laddning_bil_daglig:
-    source: sensor.laddbox_total_forbrukning
-    cycle: daily
+laddning_bil_manad:
+  source: sensor.laddbox_total_forbrukning
+  cycle: monthly
+laddning_bil_daglig:
+  source: sensor.laddbox_total_forbrukning
+  cycle: daily
