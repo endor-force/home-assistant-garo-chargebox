@@ -31,6 +31,7 @@ homeassistant:
 
 ```
 
+
 4. Add the view or cards in to existing view in `ui-lovelace.yaml` if you are using Yaml mode:
 
 
@@ -41,12 +42,12 @@ homeassistant:
     ```
     b) Or add the cards in existing view (example):
     ```
-      - title: Car
-        id: car
-        icon: mdi:car
-        panel: false
-        cards:
-          - !include garo_chargebox/lovelace_cards.yaml
+   - title: Car
+     id: car
+     icon: mdi:car
+     panel: false
+     cards:
+       - !include garo_chargebox/lovelace_cards.yaml
     ```
 
 
