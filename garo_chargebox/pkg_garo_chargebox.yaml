@@ -113,7 +113,7 @@ template:
                 'INITIALIZATION' : 'Initierar',
                 'CABLE_FAULT' : 'Kabelfel',
                 'LOCK_FAULT' : 'Låsfel',
-                'CONTACTOR_FAULT' : 'Kontaktfel',
+                'CONTACTOR_FAULT' : 'Kontaktorfel',
                 'VENT_FAULT' : 'Ventileringsfel',
                 'DC_ERROR' : 'DC-fel',
                 'DISABLED' : 'Inaktiverad',
