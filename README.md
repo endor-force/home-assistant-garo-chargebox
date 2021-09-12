@@ -17,7 +17,7 @@ It consists of the following parts:
 ### How to add to your Home Assistant:
 
 1. Download and put `www` and `garo_chargebox` in to your home assistant `config` folder.
-2. Update the files `garo_chargebox/pkg_garo_chargebox.yaml` with the ip or hostname of your chargebox.
+2. Update the file `garo_chargebox/pkg_garo_chargebox.yaml` with the ip or hostname of your chargebox.
 3. Add below in `configuration.yaml` in `homeassistant` `packages` area as below example:
 
 
