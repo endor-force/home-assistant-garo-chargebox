@@ -3,46 +3,4 @@ id: car
 icon: mdi:car
 panel: false
 cards:
-  - type: vertical-stack
-    cards:
-      - type: picture-entity
-        name: Laddbox
-        entity: sensor.laddbox_status
-        state_image:
-            "Klar": /local/laddbox_green.png
-            "Avbruten": /local/laddbox_green.png
-            "Pausad av lastbalanserare": /local/laddbox_green.png
-            "Ej ansluten": /local/laddbox_green.png
-            "Ansluten": /local/laddbox_green.png
-            "Ansluten - söker": /local/laddbox_green.png
-            "Laddar": /local/laddbox_blue.png
-            "Skyddsbrytare utlöst": /local/laddbox_red.png
-            "Överhettad, begränsad": /local/laddbox_blue.png
-            "Kritisk temperatur": /local/laddbox_red.png
-            "Initierar": /local/laddbox_green.png
-            "Kabelfel": /local/laddbox_red.png
-            "Låsfel": /local/laddbox_red.png
-            "Kontaktorfel": /local/laddbox_red.png
-            "Ventileringsfel": /local/laddbox_red.png
-            "DC-fel": /local/laddbox_red.png
-            "Inaktiverad": /local/laddbox_off.png
-            "Laddning pausad (Master)" : /local/laddbox_blue.png
-            "Externt deaktiverad" : /local/laddbox_blue.png
-            "DC hårdvarufel" : /local/laddbox_red.png
-            "Kommunikationsfel (CP-signal)" : /local/laddbox_red.png
-            "Kommunikationsfel (CP-kortsluten)" : /local/laddbox_red.png
-            "None": /local/laddbox_off.png
-      - type: entities
-        entities:
-          - entity: sensor.aktuell_forbrukning
-          - entity: sensor.aktuell_laddstrom
-          - entity: sensor.laddat_sedan_anslutning
-          - entity: sensor.laddbox_temp
-          - entity: sensor.total_forbrukning
-          - entity: switch.laddbox_mode
-      - type: entities
-        entities:
-          - entity: sensor.laddning_bil_daglig
-            name: Förbrukat idag
-          - entity: sensor.laddning_bil_manad
-            name: Laddat denna månad
+  - !include lovelace_cards.yaml
