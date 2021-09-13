@@ -22,7 +22,7 @@ cards:
             "Initierar": /local/laddbox_green.png
             "Kabelfel": /local/laddbox_red.png
             "Låsfel": /local/laddbox_red.png
-            "Kontaktfel": /local/laddbox_red.png
+            "Kontaktorfel": /local/laddbox_red.png
             "Ventileringsfel": /local/laddbox_red.png
             "DC-fel": /local/laddbox_red.png
             "Inaktiverad": /local/laddbox_off.png
