@@ -85,7 +85,11 @@ template:
           name: 'Total förbrukning'
           icon: mdi:gauge
           unit_of_measurement: 'kWh'
-          state: '{{ state_attr("sensor.laddbox", "latestReading")/1000 | round(1) }}'
+          state: >
+            {% set state = state_attr('sensor.laddbox', 'latestReading')/1000 | round(1) %}
+            {% if state > 0 %}
+              {{state}}
+            {% endif %}
 
         - unique_id: 'laddbox_temp'
           name: 'Laddbox temp'
