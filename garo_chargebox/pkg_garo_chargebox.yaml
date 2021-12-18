@@ -50,7 +50,7 @@ template:
     - sensor:
         - unique_id: 'laddbox_chargingcurrent'
           name: 'Aktuell laddström'
-          icon: mdi:flash-circle
+          icon: mdi:lightning-bolt-circle
           unit_of_measurement: 'A'
           state_class: measurement
           state: >
