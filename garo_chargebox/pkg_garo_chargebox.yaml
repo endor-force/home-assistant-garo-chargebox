@@ -15,22 +15,14 @@
 sensor:
   - platform: rest
     name: Laddbox
-    resource: http://192.168.xxx.yyy:8080/servlet/rest/chargebox/status
+    resource: http://168.168.xxx:8080/servlet/rest/chargebox/status
     json_attributes:
-        - connector
         - mode
         - currentLimit
-        - pilotLevel
         - powerMode
-        - currentChargingCurrent
-        - currentChargingPower
-        - accSessionEnergy
         - latestReading
         - currentTemperature
-        - sessionStartValue
-        - nrOfPhases
-        - sessionStartTime
-        - accSessionMillis
+        - mainCharger
     value_template: '{{ value_json.connector }}'
 
 ### For turning on and off / making charging available.
@@ -39,10 +31,20 @@ switch:
       switches:
         laddbox_mode:
             friendly_name: 'Laddbox tillgänglig'
-            command_on: '/usr/bin/curl -s -X POST http://192.168.xxx.yyy:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
-            command_off: '/usr/bin/curl -s -X POST http://192.168.xxx.yyy:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
-            command_state: '/usr/bin/curl -s -X GET http://192.168.xxx.yyy:8080/servlet/rest/chargebox/status'
+            command_on: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
+            command_off: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
+            command_state: '/usr/bin/curl -s -X GET http://192.168.xxx.xxx:8080/servlet/rest/chargebox/status'
             value_template: '{{ value_json.mode == "ALWAYS_ON" }}'
+
+
+    - platform: command_line
+      switches:
+        laddbox_schema:
+            friendly_name: 'Laddbox schema'
+            command_on: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/SCHEMA'
+            command_off: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
+            command_state: '/usr/bin/curl -s -X GET http://192.168.xxx.xxx:8080/servlet/rest/chargebox/status'
+            value_template: '{{ value_json.mode == "SCHEMA" }}'
 
 
 ### Templates to convert units and set separate sensors from attributes.
@@ -54,7 +56,7 @@ template:
           unit_of_measurement: 'A'
           state_class: measurement
           state: >
-            {% set state = state_attr('sensor.laddbox', 'currentChargingCurrent')/1000 | round(1) %}
+            {% set state = state_attr('sensor.laddbox', 'mainCharger')['currentChargingCurrent'] /1000 | round(1) %}
             {% if state >= 0 %}
             {{state}}
             {% else %}
@@ -67,7 +69,7 @@ template:
           unit_of_measurement: 'kW'
           state_class: measurement
           state: >
-            {% set state = state_attr('sensor.laddbox', 'currentChargingPower')/1000 | round(1) %}
+            {% set state = state_attr('sensor.laddbox', 'mainCharger')['currentChargingPower'] /1000 | round(1) %}
             {% if state >= 0 %}
             {{state}}
             {% else %}
@@ -77,7 +79,7 @@ template:
         - unique_id: 'laddbox_sessionenergy'
           name: 'Laddat sedan anslutning'
           icon: mdi:clock-start
-          state: '{{ state_attr("sensor.laddbox", "accSessionEnergy")/1000 | round(1) }}'
+          state: '{{ state_attr("sensor.laddbox", "mainCharger")["accSessionEnergy"] /1000 | round(1) }}'
           unit_of_measurement: 'kWh'
           state_class: measurement
 
@@ -130,7 +132,7 @@ template:
             -%}
 
             {# Get the box status from the attribute connector #}
-            {% set status = state_attr('sensor.laddbox','connector') %}
+            {% set status = state_attr('sensor.laddbox','mainCharger')['connector'] %}
 
             {#- Check if the status is translated and return the translated text.
             If a translation is not found then status text will be raw status text. -#}
