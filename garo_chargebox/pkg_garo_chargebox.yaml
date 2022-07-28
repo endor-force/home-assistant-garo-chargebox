@@ -84,8 +84,10 @@ template:
           state_class: measurement
 
         - unique_id: 'laddbox_totalconsumption'
-          name: 'Total förbrukning'
+          name: 'Laddbox förbrukning'
           icon: mdi:gauge
+          device_class: energy
+          state_class: total_increasing
           unit_of_measurement: 'kWh'
           state: >
             {% set state = state_attr('sensor.laddbox', 'latestReading')/1000 | round(1) %}
