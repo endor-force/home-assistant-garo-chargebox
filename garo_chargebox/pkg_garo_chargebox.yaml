@@ -15,7 +15,7 @@
 sensor:
   - platform: rest
     name: Laddbox
-    resource: http://168.168.xxx:8080/servlet/rest/chargebox/status
+    resource: http://192.168.xxx.xxx:8080/servlet/rest/chargebox/status
     json_attributes:
         - mode
         - currentLimit
@@ -25,26 +25,73 @@ sensor:
         - mainCharger
     value_template: '{{ value_json.connector }}'
 
-### For turning on and off / making charging available.
-switch:
-    - platform: command_line
-      switches:
-        laddbox_mode:
-            friendly_name: 'Laddbox tillgänglig'
-            command_on: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
-            command_off: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
-            command_state: '/usr/bin/curl -s -X GET http://192.168.xxx.xxx:8080/servlet/rest/chargebox/status'
-            value_template: '{{ value_json.mode == "ALWAYS_ON" }}'
+### Shell commands for turning on and off / making charging available.
+shell_command:
+    chargebox_off: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
+    chargebox_on: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
+    chargebox_schema: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/SCHEMA'
 
 
-    - platform: command_line
-      switches:
-        laddbox_schema:
-            friendly_name: 'Laddbox schema'
-            command_on: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/SCHEMA'
-            command_off: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
-            command_state: '/usr/bin/curl -s -X GET http://192.168.xxx.xxx:8080/servlet/rest/chargebox/status'
-            value_template: '{{ value_json.mode == "SCHEMA" }}'
+### Input selector dropdown
+
+input_select:
+  chargebox_mode:
+    name: Laddbox läge
+    options:
+      - "På"
+      - "Schema"
+      - "Av"
+    icon: mdi:power-settings
+
+
+### Chargebox automations
+### Trigger from input selector dropdown to select mode and run shell command
+automation:
+  - alias: "Change chargebox mode"
+    description: "Change chargebox mode based on dropdown menu selection"
+    trigger:
+      platform: state
+      entity_id: input_select.chargebox_mode
+    action:
+      service: >
+            {# Enumerate and give the chargebox translation texts. #}
+            {%-
+            set box_mode = {
+                'På' : 'chargebox_on',
+                'Schema' : 'chargebox_schema',
+                'Av' : 'chargebox_off'
+            }
+            -%}
+
+            {# Get the box status from the dropdown. #}
+            {% set mode = states('input_select.chargebox_mode') %}
+            shell_command.{{box_mode.get(mode)}}
+
+
+### Fetch mode from chargebox sensor attribute and ensure dropdown is kept in sync with actual setting.
+  - alias: "Update chargebox mode selector"
+    trigger:
+      platform: state
+      entity_id: sensor.laddbox
+      attribute: mode
+    action:
+      service: input_select.select_option
+      target:
+        entity_id: input_select.chargebox_mode
+      data:
+        option: >
+              {# Enumerate and give the chargebox translation texts. #}
+              {%-
+              set box_mode = {
+                  'ALWAYS_ON' : 'På',
+                  'SCHEMA' : 'Schema',
+                  'ALWAYS_OFF' : 'Av'
+              }
+              -%}
+
+              {# Get the box status from the chargebox sensor attribute. #}
+              {% set mode = states('input_select.chargebox_mode') %}
+              {{box_mode.get(state_attr('sensor.laddbox', 'mode'))}}
 
 
 ### Templates to convert units and set separate sensors from attributes.
