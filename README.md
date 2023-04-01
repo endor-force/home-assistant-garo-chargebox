@@ -7,7 +7,8 @@ Some texts are in Swedish, i think you will figure it out :)
 
 It consists of the following parts:
 
-* Command line switch to control availability on/off for the chargebox.. if you don't trust your neighbours then you can schedule or automate the availability of charging from the box.
+* Rest command switches with dropdown to control availability on/off/schedule for the chargebox.
+* Slider to control max charge current.
 * Rest sensor to collect the data from the box as attributes (one call to collect all stats)
 * Template sensors to calculate and make the collected data representable and enumerate statuses.
 * Lovelace cards with dynamic image that changes color based on status.
@@ -18,7 +19,8 @@ It consists of the following parts:
 
 1. Download and put `www` and `garo_chargebox` in to your home assistant `config` folder.
 2. Update the file `garo_chargebox/pkg_garo_chargebox.yaml` with the ip or hostname of your chargebox.
-3. Add below in `configuration.yaml` in `homeassistant` `packages` area as below example:
+3. Verify the max charge current in your box. (You can see it in the main rest sensor attribute "switchCurrentLimit")
+4. Add below in `configuration.yaml` in `homeassistant` `packages` area as below example:
 
 
 ```
