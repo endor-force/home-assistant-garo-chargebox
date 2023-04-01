@@ -3,7 +3,7 @@ An integration with Garo Chargebox without custom components.
 
 Some texts are in Swedish, i think you will figure it out :)
 
-![image|311x500](content/lovelace-screenshot.png)
+![image](content/lovelace-screenshot.png)
 
 It consists of the following parts:
 
