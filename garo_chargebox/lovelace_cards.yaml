@@ -35,6 +35,7 @@ cards:
       - entity: sensor.laddbox_temp
       - entity: sensor.total_forbrukning
       - entity: input_select.chargebox_mode
+      - entity: input_number.chargebox_limit
   - type: entities
     entities:
       - entity: sensor.laddning_bil_daglig
