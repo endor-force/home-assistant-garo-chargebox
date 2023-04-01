@@ -1,6 +1,7 @@
 ### GARO EV Charger package.
 ###
-### Load in configuration.yaml as a package under homeassistant.
+### 1. Load in configuration.yaml as a package under homeassistant.
+### 2. Update max charge limit on the input_number slider if you have other max current than 16A set in your box.
 ###
 ### *** example ***
 ###
@@ -23,17 +24,32 @@ sensor:
         - latestReading
         - currentTemperature
         - mainCharger
+        - switchCurrentLimit
     value_template: '{{ value_json.connector }}'
 
-### Shell commands for turning on and off / making charging available.
-shell_command:
-    chargebox_off: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
-    chargebox_on: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
-    chargebox_schema: '/usr/bin/curl -s -X POST http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/SCHEMA'
+
+### Rest commands for turning on and off / making charging available and setting chargelimit.
+rest_command:
+    chargebox_chargelimit:
+        url: 'http://192.168.xxx.xxx:8080/servlet/rest/chargebox/currentlimit'
+        method: post
+        content_type: 'application/json'
+        payload: '{"reducedIntervalsEnabled": "{{ enabled }}","reducedCurrentIntervals": [{"chargeLimit": "{{ chargelimit }}"}]}'
+
+    chargebox_off:
+        url: 'http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_OFF'
+        method: post
+
+    chargebox_on:
+        url: 'http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/ALWAYS_ON'
+        method: post
+
+    chargebox_schema:
+        url: 'http://192.168.xxx.xxx:8080/servlet/rest/chargebox/mode/SCHEMA'
+        method: post
 
 
 ### Input selector dropdown
-
 input_select:
   chargebox_mode:
     name: Laddbox läge
@@ -43,9 +59,19 @@ input_select:
       - "Av"
     icon: mdi:power-settings
 
+### Input slider for chargelimit. Adjust max value if your box has other limits (Check the mother rest sensor value switchCurrentLimit)
+input_number:
+  chargebox_limit:
+    name: 'Laddbox max laddström'
+    mode: slider
+    min: 6
+    max: 16
+    icon: mdi:car-speed-limiter
+    unit_of_measurement: "A"
+
 
 ### Chargebox automations
-### Trigger from input selector dropdown to select mode and run shell command
+### Trigger from input selector dropdown to select mode and run rest command
 automation:
   - alias: "Change chargebox mode"
     description: "Change chargebox mode based on dropdown menu selection"
@@ -65,7 +91,7 @@ automation:
 
             {# Get the box status from the dropdown. #}
             {% set mode = states('input_select.chargebox_mode') %}
-            shell_command.{{box_mode.get(mode)}}
+            rest_command.{{box_mode.get(mode)}}
 
 
 ### Fetch mode from chargebox sensor attribute and ensure dropdown is kept in sync with actual setting.
@@ -92,6 +118,33 @@ automation:
               {# Get the box status from the chargebox sensor attribute. #}
               {% set mode = states('input_select.chargebox_mode') %}
               {{box_mode.get(state_attr('sensor.laddbox', 'mode'))}}
+
+
+### Set chargelimit from input slider
+  - alias: "Change chargebox currentlimit"
+    description: "Change chargebox currentlimit based on input slider."
+    trigger:
+      platform: state
+      entity_id: input_number.chargebox_limit
+    action:
+      - service: rest_command.chargebox_chargelimit
+        data:
+          enabled: "true"
+          chargelimit: "{{states('input_number.chargebox_limit') | int }}"
+
+
+### Fetch actual currentlimit from chargebox and set the chargelimit slider.
+  - alias: "Update chargebox limit slider."
+    trigger:
+      platform: state
+      entity_id: sensor.laddbox
+      attribute: currentLimit
+    action:
+      service: input_number.set_value
+      target:
+        entity_id: input_number.chargebox_limit
+      data:
+        value: "{{ state_attr('sensor.laddbox', 'currentLimit') }}"
 
 
 ### Templates to convert units and set separate sensors from attributes.
